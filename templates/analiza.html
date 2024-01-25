@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Analiza Wyników EKG{% endblock %}
+
+{% block content %}
+    <center>
+    <h1>Analiza wyników badań EKG</h1>
+
+    <!-- Wykres przebiegu EKG -->
+    <div>
+        <h2>Przebieg EKG</h2>
+        <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot">
+    </div>
+    <div>
+    </div>
+
+    <!-- Tabela z podstawowymi parametrami -->
+    <div>
+        <h2>Podstawowe parametry EKG</h2>
+        <table border="1">
+            <tr>
+                <th>Arytmia</th>
+                <th>Max HR</th>
+                <th>Min HR</th>
+                <th>Pobudzenia</th>
+                <!-- Dodaj inne istotne parametry -->
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <!-- Dodaj inne wartości parametrów -->
+            </tr>
+        </table>
+    </div>
+
+    <!-- Przycisk do wyeksportowania wyników do PDF -->
+    <div>
+        <h2>Wyeksportuj wyniki do PDF</h2>
+        <form method="get" action="{{ url_for('download_pdf') }}">
+            <!-- Tutaj dodaj odpowiednie pola formularza, jeśli są potrzebne -->
+            <button type="submit">Eksportuj do PDF</button>
+        </form>
+    </div>
+
+    <a href="{{ url_for('index') }}">Wróć do strony głównej</a>
+    </center>
+{% endblock %}

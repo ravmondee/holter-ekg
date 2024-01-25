@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Konfiguracja Holtera{% endblock %}
+{% block content %}
+    <h1>Holter EKG</h1>
+    <form method="get" action="{{ url_for('konfiguracja') }}">
+        <label for="start_date">Data rozpoczęcia pomiarów:</label>
+        <input type="date" name="start_date" required><br>
+
+        <label for="end_date">Data zakończenia pomiarów:</label>
+        <input type="date" name="end_date" required><br>
+
+        <button type="submit">Zapisz konfigurację</button>
+    </form>
+    <a href="{{ url_for('index') }}">Wróć do strony głównej</a>
+{% endblock %}
