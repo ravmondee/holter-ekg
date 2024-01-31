@@ -18,10 +18,13 @@
         <h2>Podstawowe parametry EKG</h2>
         <table border="1">
             <tr>
-                <th>Arytmia</th>
+                <th>Średni HR</th>
                 <th>Max HR</th>
                 <th>Min HR</th>
-                <th>Pobudzenia</th>
+                <th>Łączna liczba anotacji</th>
+                <th>Liczba anotacji N</th>
+                <th>Liczba anotacji A</th>
+
                 <!-- Dodaj inne istotne parametry -->
             </tr>
             <tr>
@@ -37,7 +40,7 @@
     <!-- Przycisk do wyeksportowania wyników do PDF -->
     <div>
         <h2>Wyeksportuj wyniki do PDF</h2>
-        <form method="get" action="{{ url_for('download_pdf') }}">
+        <form method="get">
             <!-- Tutaj dodaj odpowiednie pola formularza, jeśli są potrzebne -->
             <button type="submit">Eksportuj do PDF</button>
         </form>

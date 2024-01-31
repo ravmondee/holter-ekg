@@ -2,12 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 from io import BytesIO
 import wfdb
-import mpld3
-import aspose.pdf as ap
+# import aspose.pdf as ap
 import matplotlib.pyplot as plt
 import base64
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 
 @app.route('/')
 def index():
@@ -45,11 +44,11 @@ def analiza():
     return render_template('analiza.html', chart_data=chart_data)
 
 
-@app.route('/download_pdf')
-def download_pdf():
-    options = ap.HtmlLoadOptions()
-    document = ap.Document("analiza.html", options)
-    document.save("test.pdf")
+# @app.route('/download_pdf')
+# def download_pdf():
+#     options = ap.HtmlLoadOptions()
+#     document = ap.Document("analiza.html", options)
+#     document.save("test.pdf")
 
 if __name__ == '__main__':
     app.run()
