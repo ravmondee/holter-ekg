@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Strona główna{% endblock %}
+{% block content %}
+    </br></br>
+<center>
+    <h3 class="display-3">Strona logowania</h3>
+    <form  method="post" action ="{{ url_for('login') }}">
+        <div class="mb-3">
+        <label for="login" class="form-label"></label>
+        <input type="text" class="form-label" placeholder="Wpisz login" name="login" required><br>
+        </div>
+        <div class="mb-3">
+        <label for="password" class="form-label"></label>
+        <input type="password" class="form-label" placeholder="Wpisz haslo" name="password" required><br>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Zaloguj</button>
+    </form>
+</center>
+{% endblock %}
+

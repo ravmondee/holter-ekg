@@ -3,10 +3,11 @@
 
 {% block content %}
     <center>
-    <h2 class="display-1">Analiza wyników badań EKG</h2>
+    <h3 class="display-4">Analiza wyników badań EKG</h3>
 
     <!-- Wykres przebiegu EKG -->
     <div>
+        <br>
         <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot" class="img-fluid">
     </div>
     <div>
@@ -37,13 +38,18 @@
 
     <!-- Przycisk do wyeksportowania wyników do PDF -->
     <div>
-        <h2>Wyeksportuj wyniki do PDF</h2>
-        <form method="get">
-            <!-- Tutaj dodaj odpowiednie pola formularza, jeśli są potrzebne -->
-            <button type="submit">Eksportuj do PDF</button>
+        <form method="get" action="{{ url_for('download_pdf') }}">
+            <!-- Dodaj ukryte pole z atrybutem download -->
+            <input type="hidden" name="download" value="1">
+            <button type="submit" class="btn btn-primary btn-lg">Eksportuj do PDF</button><br><br>
         </form>
     </div>
 
-    <a href="{{ url_for('index') }}">Wróć do strony głównej</a>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">Wróć do strony głównej</a><br><br>
+    <form  method="post" action ="{{ url_for('logout') }}">
+        <button type="submit" class="btn btn-primary btn-lg">Wyloguj</button>
+    </form>
+
     </center>
+
 {% endblock %}

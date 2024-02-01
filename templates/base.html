@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link type ="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link type ="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <script src=""></script>
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body data-bs-theme="light">
+    <div class="container"><h1 class="display-1">WATOWSKYmed</h1></div>
     {% block content %}{% endblock %}
 </body>
 </html>
