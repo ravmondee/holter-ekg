@@ -12,6 +12,7 @@ import numpy
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "klucz"
 
+
 @app.route('/', methods=["POST", "GET"])
 def login():
     if request.method == 'POST':
@@ -29,14 +30,18 @@ def login():
 
     return render_template('login.html')
 
+
 @app.route('/blad_logowania')
 def blad_logowania():
+    session.pop("user", None)
     return render_template('blad_logowania.html')
 
-@app.route('/logout',  methods=["POST"])
+
+@app.route('/logout', methods=["POST"])
 def logout():
     session.pop("user", None)
     return redirect(url_for('login'))
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -45,9 +50,12 @@ def dashboard():
         return render_template('dashboard.html', content=user)
     else:
         return redirect(url_for('login'))
+
+
+
 @app.route('/konfiguracja')
 def konfiguracja():
-     if "user" in session:
+    if "user" in session:
         user = session["user"]
         if request.method == 'get':
             start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
@@ -55,13 +63,12 @@ def konfiguracja():
 
             return redirect(url_for('dashboard'))
         return render_template('konfiguracja.html', content=user)
-     else:
-         return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/analiza')
 def analiza():
-    global total_ann
     if "user" in session:
         user = session["user"]
         fs = 360
@@ -140,7 +147,8 @@ def analiza():
 
         # Convert image to base64
         chart_data = base64.b64encode(buf.read()).decode('utf-8')
-        return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr, total_ann=total_ann, count_N=count_N, count_A=count_A, content=user)
+        return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,
+                               total_ann=total_ann, count_N=count_N, count_A=count_A, content=user)
     else:
         return redirect(url_for('login'))
 
@@ -149,5 +157,6 @@ def analiza():
 def download_pdf():
     pass
 
+
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5555)

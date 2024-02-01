@@ -6,7 +6,7 @@
     <h3 class="display-4">Analiza wyników badań EKG</h3>
 
     <!-- Wykres przebiegu EKG -->
-    <div>
+    <div id="wykres">
         <br>
         <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot" class="img-fluid">
     </div>
@@ -14,7 +14,7 @@
     </div>
 
     <!-- Tabela z podstawowymi parametrami -->
-        <div>
+        <div id="tabela">
         <h2>Podstawowe parametry EKG</h2>
         <table class="table">
             <tr>
