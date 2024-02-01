@@ -10,9 +10,11 @@ import numpy
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/konfiguracja')
 def konfiguracja():
@@ -64,8 +66,11 @@ def analiza():
         # Wyświetl informacje o annotacjach
         f.write(f"Average Heart Rate: {mean_hr:.2f}\n")
         f.write(f"Liczba annotacji: {len(annotacje.symbol)}\n")
+        total_ann = len(annotacje.symbol)
         f.write(f"Liczba annotacji N: {char_symbol.count('N')}\n")
         f.write(f"Liczba annotacji A: {char_symbol.count('A')}\n")
+        count_N = char_symbol.count('N')
+        count_A = char_symbol.count('A')
         f.write(f"Maksymalny heart rate: {max(float_hr):.2f}\n")
         f.write(f"Minimalny heart rate: {min(float_hr):.2f}\n")
         for i, (symbol, sample, hr) in enumerate(zip(annotacje.symbol, annotacje.sample, float_hr), start=1):
@@ -75,10 +80,14 @@ def analiza():
 
     f.close()
 
+    # Średni HR, Max HR, Min HR
+    avg_hr = f"{mean_hr:.2f}"
+    max_hr = f"{max(float_hr):.2f}"
+    min_hr = f"{min(float_hr):.2f}"
+
     # Plot signal
-    plt.figure(figsize=(10, 4))
+    plt.figure(figsize=(20, 5))
     plt.plot(record[:, 1], label='Channel 1')
-    # plt.plot(ann_samp=[qrs_inds], label='Channel 1')
     plt.title('MIT-BIH Record 100')
     plt.xlabel('Time (samples)')
     plt.ylabel('ECG Signal')
@@ -92,7 +101,7 @@ def analiza():
     # Convert image to base64
     chart_data = base64.b64encode(buf.read()).decode('utf-8')
 
-    return render_template('analiza.html', chart_data=chart_data)
+    return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr, total_ann=total_ann, count_N=count_N, count_A=count_A)
 
 
 # @app.route('/download_pdf')

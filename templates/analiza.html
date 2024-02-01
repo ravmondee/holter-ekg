@@ -3,20 +3,19 @@
 
 {% block content %}
     <center>
-    <h1>Analiza wyników badań EKG</h1>
+    <h2 class="display-1">Analiza wyników badań EKG</h2>
 
     <!-- Wykres przebiegu EKG -->
     <div>
-        <h2>Przebieg EKG</h2>
-        <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot">
+        <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot" class="img-fluid">
     </div>
     <div>
     </div>
 
     <!-- Tabela z podstawowymi parametrami -->
-    <div>
+        <div>
         <h2>Podstawowe parametry EKG</h2>
-        <table border="1">
+        <table class="table">
             <tr>
                 <th>Średni HR</th>
                 <th>Max HR</th>
@@ -24,15 +23,14 @@
                 <th>Łączna liczba anotacji</th>
                 <th>Liczba anotacji N</th>
                 <th>Liczba anotacji A</th>
-
-                <!-- Dodaj inne istotne parametry -->
             </tr>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <!-- Dodaj inne wartości parametrów -->
+                <td>{{ avg_hr }}</td>
+                <td>{{ max_hr }}</td>
+                <td>{{ min_hr }}</td>
+                <td>{{ total_ann }}</td>
+                <td>{{ count_N }}</td>
+                <td>{{ count_A }}</td>
             </tr>
         </table>
     </div>
