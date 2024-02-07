@@ -11,8 +11,9 @@ import numpy
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "klucz"
-przesuniecie = 0
+
 # defincja zmiennych globalnych
+przesuniecie = 0
 fs = 360
 nazwa_pliku = '100'
 record_all, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=0)
@@ -85,24 +86,24 @@ def analiza():
 
         global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie
         
+        # Reakcja na przyciski przesuniecia
         if 'przesuniecie' in request.args:
             przesuniecie += int(request.args['przesuniecie'])
-        # if 'move_back' in request.args:
-        #     przesuniecie += int(request.args['move_back'])
+        # ustalenie granic wykresu po kliknieciu
         sampfrom = przesuniecie
         sampto = przesuniecie + 3000
 
-        
-
+        # pobranie rekordów z pliku
         record, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=sampfrom, sampto=sampto)
-        # Obliczenia
-
         
-
+        # zamiana sampli na czas
+        # jeszcze nie używamy czasu na razie pracujemy na samplach
         czas_start = sampfrom / fs
         czas_stop = sampto / fs
+        # zdefiniowanie osi x dla wykresu
         os_x = range(sampfrom, sampto)
 
+        # obliczenia qrs, rr, heart rate oraz pobranie annotacji
         qrs_inds = wfdb.processing.xqrs_detect(sig=record[:, 0], fs=fields['fs'])
         rr = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
         mean_hr = wfdb.processing.calc_mean_hr(rr, fs, rr_units='samples')
@@ -190,10 +191,6 @@ def analiza():
         max_hr_all = f"{max(float_hr_all):.2f}"
         min_hr_all = f"{min(float_hr_all):.2f}"
 
-
-        
-
-
         # Plot signal
         # plt.figure(figsize=(20, 6))
         # plt.style.use('ggplot')
@@ -227,6 +224,7 @@ def analiza():
         # Convert image to base64
         chart_data = base64.b64encode(buf.getvalue()).decode('utf-8')
         # chart_data1 = base64.b64encode(buf1.read()).decode('utf-8')
+        # zwrócenie wszystkich danych do html
         return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,
                                total_ann=total_ann, count_N=count_N, count_A=count_A, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all,
                                total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, content=user)
