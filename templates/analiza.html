@@ -5,6 +5,12 @@
     <center>
     <h3 class="display-4">Analiza wyników badań EKG</h3>
 
+        <!-- Przyciski do przesuwania wykresu -->
+    <div>
+        <a href="{{ url_for('analiza', przesuniecie=-3000) }}" class="btn btn-primary btn-lg">Przesuń wykres w tył o 3000 próbek</a>
+        <a href="{{ url_for('analiza', przesuniecie=3000) }}" class="btn btn-primary btn-lg">Przesuń wykres w przód o 3000 próbek</a>
+    </div>
+
     <!-- Wykres przebiegu EKG -->
     <div id="wykres">
         <br>
@@ -14,8 +20,8 @@
     </div>
 
     <!-- Tabela z podstawowymi parametrami -->
-        <div id="tabela">
-        <h2>Podstawowe parametry EKG</h2>
+    <div id="tabela">
+        <h2>Podstawowe parametry dla fragmentu EKG</h2>
         <table class="table">
             <tr>
                 <th>Średni HR</th>
@@ -32,6 +38,28 @@
                 <td>{{ total_ann }}</td>
                 <td>{{ count_N }}</td>
                 <td>{{ count_A }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="tabela">
+        <h2>Podstawowe parametry dla całego EKG</h2>
+        <table class="table">
+            <tr>
+                <th>Średni HR</th>
+                <th>Max HR</th>
+                <th>Min HR</th>
+                <th>Łączna liczba anotacji</th>
+                <th>Liczba anotacji N</th>
+                <th>Liczba anotacji A</th>
+            </tr>
+            <tr>
+                <td>{{ avg_hr_all }}</td>
+                <td>{{ max_hr_all }}</td>
+                <td>{{ min_hr_all }}</td>
+                <td>{{ total_ann_all }}</td>
+                <td>{{ count_N_all }}</td>
+                <td>{{ count_A_all }}</td>
             </tr>
         </table>
     </div>

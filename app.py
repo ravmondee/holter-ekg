@@ -11,6 +11,17 @@ import numpy
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "klucz"
+przesuniecie = 0
+# defincja zmiennych globalnych
+fs = 360
+nazwa_pliku = '100'
+record_all, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=0)
+qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fields['fs'])
+rr_all = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
+mean_hr_all = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='samples')
+heart_rate_all = wfdb.processing.compute_hr(len(record_all), qrs_inds_all, fs)
+annotacje_all = wfdb.rdann(nazwa_pliku, 'atr', sampfrom=0, sampto=len(record_all))
+
 
 
 @app.route('/', methods=["POST", "GET"])
@@ -71,35 +82,72 @@ def konfiguracja():
 def analiza():
     if "user" in session:
         user = session["user"]
-        fs = 360
-        nazwa_pliku = '100'
-        record, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=3000, sampto=6000)
+
+        global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie
+        
+        if 'przesuniecie' in request.args:
+            przesuniecie += int(request.args['przesuniecie'])
+        # if 'move_back' in request.args:
+        #     przesuniecie += int(request.args['move_back'])
+        sampfrom = przesuniecie
+        sampto = przesuniecie + 3000
+
+        
+
+        record, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=sampfrom, sampto=sampto)
         # Obliczenia
+
+        
+
+        czas_start = sampfrom / fs
+        czas_stop = sampto / fs
+        os_x = range(sampfrom, sampto)
+
         qrs_inds = wfdb.processing.xqrs_detect(sig=record[:, 0], fs=fields['fs'])
         rr = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
         mean_hr = wfdb.processing.calc_mean_hr(rr, fs, rr_units='samples')
         heart_rate = wfdb.processing.compute_hr(len(record), qrs_inds, fs)
-        annotacje = wfdb.rdann(nazwa_pliku, 'atr')
+        annotacje = wfdb.rdann(nazwa_pliku, 'atr', sampfrom=sampfrom, sampto=sampto)
+        
         # wykres z zaznaczonymi qrs
-        wfdb.plot_items(signal=record, ann_samp=[qrs_inds])
+        # fig=wfdb.plot_items(signal=record, ann_samp=[qrs_inds],return_fig=True)
+        # fig=wfdb.plot_wfdb(record=record, annotation=annotacje,plot_sym=True,title='MIT-BIH Record 100',figsize=(20,6),return_fig=True)
+        # fig.savefig("ann.png")
 
         # przekształcenia
         float_mean_hr = float(mean_hr)
         count_N = 0
         count_A = 0
 
+        float_mean_hr_all = float(mean_hr_all)
+        count_N_all = 0
+        count_A_all = 0
+
         float_hr = []
+
+        float_hr_all = []
 
         for i in heart_rate:
             if numpy.isnan(i):
                 float_hr.append(float_mean_hr)
             else:
                 float_hr.append(float(i))
+        
+        for i in heart_rate_all:
+            if numpy.isnan(i):
+                float_hr_all.append(float_mean_hr_all)
+            else:
+                float_hr_all.append(float(i))
 
         char_symbol = []
 
         for i in annotacje.symbol:
             char_symbol.append(str(i))
+        
+        char_symbol_all = []
+
+        for i in annotacje_all.symbol:
+            char_symbol_all.append(str(i))
 
         # generacja pliku
         f = open("annotation_log.txt", "w")
@@ -126,29 +174,62 @@ def analiza():
 
         f.close()
 
+        total_ann_all = len(annotacje_all.symbol)
+
+        count_N_all = char_symbol_all.count('N')
+        count_A_all = char_symbol_all.count('A')
+
         # Średni HR, Max HR, Min HR
         avg_hr = f"{mean_hr:.2f}"
+
+        avg_hr_all = f"{mean_hr:.2f}"
+
         max_hr = f"{max(float_hr):.2f}"
         min_hr = f"{min(float_hr):.2f}"
 
+        max_hr_all = f"{max(float_hr_all):.2f}"
+        min_hr_all = f"{min(float_hr_all):.2f}"
+
+
+        
+
+
         # Plot signal
-        plt.figure(figsize=(20, 6))
-        plt.style.use('ggplot')
-        plt.plot(record[:, 1], label='Channel 1')
-        plt.title('MIT-BIH Record 100')
-        plt.xlabel('Time (samples)')
-        plt.ylabel('ECG Signal')
+        # plt.figure(figsize=(20, 6))
+        # plt.style.use('ggplot')
+        # plt.plot(record[:, 1], label='Channel 1')
+        # plt.title('MIT-BIH Record 100')
+        # plt.xlabel('Time (samples)')
+        # plt.ylabel('ECG Signal')
 
         # Save plot to BytesIO buffer
         buf = BytesIO()
+        plt.figure(figsize=(12, 6))
+        plt.plot(os_x, record)
+        plt.title('ECG Signal')
+        plt.xlabel('Sample')
+        plt.ylabel('Amplitude')
+
+        # Dodaj zaznaczenia annotacji
+        for sample, symbol in zip(annotacje.sample, annotacje.symbol):
+            if sampfrom <= sample < sampto and sample < len(record_all):
+                plt.text(sample, record_all[sample, 0], symbol, fontsize=10, color='red')
+
+        plt.grid(True)
+        plt.tight_layout()
+        # plt.show()
+        # buf1 = BytesIO()
         plt.savefig(buf, format='png')
+        # fig.savefig(buf1, format='png')
         buf.seek(0)
         plt.close()
 
         # Convert image to base64
-        chart_data = base64.b64encode(buf.read()).decode('utf-8')
+        chart_data = base64.b64encode(buf.getvalue()).decode('utf-8')
+        # chart_data1 = base64.b64encode(buf1.read()).decode('utf-8')
         return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,
-                               total_ann=total_ann, count_N=count_N, count_A=count_A, content=user)
+                               total_ann=total_ann, count_N=count_N, count_A=count_A, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all,
+                               total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, content=user)
     else:
         return redirect(url_for('login'))
 
@@ -159,4 +240,4 @@ def download_pdf():
 
 
 if __name__ == '__main__':
-    app.run(port=5555)
+    app.run(port=5555,threaded=False)
