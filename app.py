@@ -8,6 +8,7 @@ from wfdb import processing
 import matplotlib.pyplot as plt
 import base64
 import numpy
+from scipy.signal import savgol_filter
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "klucz"
@@ -109,6 +110,9 @@ def analiza():
         mean_hr = wfdb.processing.calc_mean_hr(rr, fs, rr_units='samples')
         heart_rate = wfdb.processing.compute_hr(len(record), qrs_inds, fs)
         annotacje = wfdb.rdann(nazwa_pliku, 'atr', sampfrom=sampfrom, sampto=sampto)
+
+        # filtrowanie EKG
+        smoothed_signal = savgol_filter(record[:, 0], window_length=51, polyorder=3)
         
         # wykres z zaznaczonymi qrs
         # fig=wfdb.plot_items(signal=record, ann_samp=[qrs_inds],return_fig=True)
@@ -202,7 +206,12 @@ def analiza():
         # Save plot to BytesIO buffer
         buf = BytesIO()
         plt.figure(figsize=(12, 6))
-        plt.plot(os_x, record)
+        # plotuje samo EKG
+        plt.plot(os_x, record[:, 0])
+        # plotuje EKG oraz to pomarańczowe coś
+        # plt.plot(os_x, record) 
+        # plotuje zfiltrowane EKG
+        # plt.plot(os_x, smoothed_signal, color='blue')
         plt.title('ECG Signal')
         plt.xlabel('Sample')
         plt.ylabel('Amplitude')
@@ -210,7 +219,10 @@ def analiza():
         # Dodaj zaznaczenia annotacji
         for sample, symbol in zip(annotacje.sample, annotacje.symbol):
             if sampfrom <= sample < sampto and sample < len(record_all):
+                # annotacje dla normalnego EKG
                 plt.text(sample, record_all[sample, 0], symbol, fontsize=10, color='red')
+                # annotacje dla zfiltrowanego EKG
+                # plt.text(sample, smoothed_signal[sample - sampfrom], symbol, fontsize=10, color='red')
 
         plt.grid(True)
         plt.tight_layout()
