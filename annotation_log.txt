@@ -1,18 +1,17 @@
-Average Heart Rate: 75.57
-Liczba annotacji: 12
-Liczba annotacji N: 10
-Liczba annotacji A: 1
-Maksymalny heart rate: 91.91
-Minimalny heart rate: 60.34
-sample nr: 18. Kod annotacji: +, Czas annotacji: 0.05 sekundy, Heart rate: 75.57
-sample nr: 77. Kod annotacji: N, Czas annotacji: 0.21 sekundy, Heart rate: 75.57
-sample nr: 370. Kod annotacji: N, Czas annotacji: 1.03 sekundy, Heart rate: 75.57
-sample nr: 662. Kod annotacji: N, Czas annotacji: 1.84 sekundy, Heart rate: 75.57
-sample nr: 946. Kod annotacji: N, Czas annotacji: 2.63 sekundy, Heart rate: 75.57
-sample nr: 1231. Kod annotacji: N, Czas annotacji: 3.42 sekundy, Heart rate: 75.57
-sample nr: 1515. Kod annotacji: N, Czas annotacji: 4.21 sekundy, Heart rate: 75.57
-sample nr: 1809. Kod annotacji: N, Czas annotacji: 5.03 sekundy, Heart rate: 75.57
-sample nr: 2044. Kod annotacji: A, Czas annotacji: 5.68 sekundy, Heart rate: 75.57
-sample nr: 2402. Kod annotacji: N, Czas annotacji: 6.67 sekundy, Heart rate: 75.57
-sample nr: 2706. Kod annotacji: N, Czas annotacji: 7.52 sekundy, Heart rate: 75.57
-sample nr: 2998. Kod annotacji: N, Czas annotacji: 8.33 sekundy, Heart rate: 75.57
+Average Heart Rate: 70.91
+Liczba annotacji: 11
+Liczba annotacji N: 0
+Liczba annotacji A: 0
+Maksymalny heart rate: 73.97
+Minimalny heart rate: 66.67
+sample nr: 31. Kod annotacji: +, Czas annotacji: 0.09 sekundy, Heart rate: 70.91
+sample nr: 197. Kod annotacji: L, Czas annotacji: 0.55 sekundy, Heart rate: 70.91
+sample nr: 489. Kod annotacji: L, Czas annotacji: 1.36 sekundy, Heart rate: 70.91
+sample nr: 804. Kod annotacji: L, Czas annotacji: 2.23 sekundy, Heart rate: 70.91
+sample nr: 1127. Kod annotacji: L, Czas annotacji: 3.13 sekundy, Heart rate: 70.91
+sample nr: 1430. Kod annotacji: L, Czas annotacji: 3.97 sekundy, Heart rate: 70.91
+sample nr: 1739. Kod annotacji: L, Czas annotacji: 4.83 sekundy, Heart rate: 70.91
+sample nr: 2040. Kod annotacji: L, Czas annotacji: 5.67 sekundy, Heart rate: 70.91
+sample nr: 2344. Kod annotacji: L, Czas annotacji: 6.51 sekundy, Heart rate: 70.91
+sample nr: 2641. Kod annotacji: L, Czas annotacji: 7.34 sekundy, Heart rate: 70.91
+sample nr: 2961. Kod annotacji: L, Czas annotacji: 8.22 sekundy, Heart rate: 70.91
