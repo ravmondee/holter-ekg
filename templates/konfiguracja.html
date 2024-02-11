@@ -1,27 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Konfiguracja Holtera{% endblock %}
 {% block content %}
-    <br><br>
-    <center>
-    <h1 class ="display-3">Holter EKG</h1>
-
+    <div align="center" class="container-sm">
     <form method="get" action="{{ url_for('konfiguracja') }}">
-        <label for="start_date" class="form-label">Data rozpoczęcia pomiarów:</label>
-        <input type="date" name="start_date" class="form-label" required><br>
-
-        <label for="end_date" class="form-label">Data zakończenia pomiarów:</label>
-        <input type="date" class="form-label" name="end_date" required><br>
-        <br>
-        <button type="submit" class="btn btn-primary btn-lg">Zapisz konfigurację</button>
+        <fieldset>
+            <legend><span class="border-bottom">Konfiguracja urządzenia</span></legend><br>
+            <div class="mb-3">
+                <label for="start_date" class="form-label">Data rozpoczęcia pomiarów:</label>
+                <input type="date" name="start_date" required class="form-control" id="start_date">
+            </div>
+            <div class="mb-3">
+                <label for="end_date" class="form-label">Data zakończenia pomiarów:</label>
+                <input type="date" name="end_date" required class="form-control" id="end_date">
+            </div>
+            <button type="submit" class="btn btn-primary">Zapisz konfigurację</button>
+        </fieldset>
     </form>
-    <br>
-    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">Wróć do strony głównej</a>
-
-<br>
-    <form  method="post" action ="{{ url_for('logout') }}" >
-        <br>
-        <button type="submit" class="btn btn-primary btn-lg">Wyloguj</button>
-    </form>
-
-    </center>
+    </div>
 {% endblock %}

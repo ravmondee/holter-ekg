@@ -24,7 +24,7 @@
   --bs-gray-200: #e9ecef;
   --bs-gray-300: #dee2e6;
   --bs-gray-400: #ced4da;
-  --bs-gray-500: #F2EFF5;
+  --bs-gray-500: #adb5bd;
   --bs-gray-600: #6c757d;
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
@@ -201,7 +201,7 @@ body {
   line-height: var(--bs-body-line-height);
   color: var(--bs-body-color);
   text-align: var(--bs-body-text-align);
-  background-color: var(--bs-gray-500);
+  background-color: var(--bs-body-bg);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -315,6 +315,7 @@ dd {
 
 blockquote {
   margin: 0 0 1rem;
+  width: 90%;
 }
 
 b,
@@ -329,7 +330,7 @@ small, .small {
 mark, .mark {
   padding: 0.1875em;
   color: var(--bs-highlight-color);
-  background-color: var(--bs-highlight-bg);
+  background-color: #0dcdfd;
 }
 
 sub,
@@ -744,40 +745,37 @@ progress {
   --bs-gutter-x: 1.5rem;
   --bs-gutter-y: 0;
   width: 100%;
-  height: 10%;
-  /*padding-right: calc(var(--bs-gutter-x) * 0.5);*/
-  /*padding-left: calc(var(--bs-gutter-x) * 0.5);*/
-  /*margin-right: auto;*/
-  /*margin-left: auto;*/
-  text-align: center;
-  background-color: #B9A8CA;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-right: auto;
+  margin-left: auto;
 }
 
-/*@media (min-width: 576px) {*/
-/*  .container-sm, .container {*/
-/*    max-width: 540px;*/
-/*  }*/
-/*}*/
-/*@media (min-width: 768px) {*/
-/*  .container-md, .container-sm, .container {*/
-/*    max-width: 720px;*/
-/*  }*/
-/*}*/
-/*@media (min-width: 992px) {*/
-/*  .container-lg, .container-md, .container-sm, .container {*/
-/*    max-width: 960px;*/
-/*  }*/
-/*}*/
-/*@media (min-width: 1200px) {*/
-/*  .container-xl, .container-lg, .container-md, .container-sm, .container {*/
-/*    max-width: 1140px;*/
-/*  }*/
-/*}*/
-/*@media (min-width: 1400px) {*/
-/*  .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {*/
-/*    max-width: 1320px;*/
-/*  }*/
-/*}*/
+@media (min-width: 576px) {
+  .container-sm, .container {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  .container-md, .container-sm, .container {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .container-lg, .container-md, .container-sm, .container {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .container-xl, .container-lg, .container-md, .container-sm, .container {
+    max-width: 1140px;
+  }
+}
+@media (min-width: 1400px) {
+  .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
+    max-width: 1320px;
+  }
+}
 :root {
   --bs-breakpoint-xs: 0;
   --bs-breakpoint-sm: 576px;
@@ -2117,7 +2115,7 @@ progress {
 
 .form-control {
   display: block;
-  width: 100%;
+  width: 25%;
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
   font-weight: 400;
@@ -2311,9 +2309,10 @@ textarea.form-control-lg {
 .form-select {
   --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   display: block;
-  width: 100%;
+  width: 20%;
+  margin-bottom: 1rem;
   padding: 0.375rem 2.25rem 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--bs-body-color);
@@ -3054,16 +3053,16 @@ textarea.form-control-lg {
 }
 
 .btn-primary {
-  --bs-btn-color: #000;
-  --bs-btn-bg: #D7C3EA;
-  --bs-btn-border-color: #D7C3EA;
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #0d6efd;
+  --bs-btn-border-color: #0d6efd;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #AEAEAF;
-  --bs-btn-hover-border-color: #AEAEAF;
+  --bs-btn-hover-bg: #0b5ed7;
+  --bs-btn-hover-border-color: #0a58ca;
   --bs-btn-focus-shadow-rgb: 49, 132, 253;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #ECE8F0;
-  --bs-btn-active-border-color: #ECE8F0;
+  --bs-btn-active-bg: #0a58ca;
+  --bs-btn-active-border-color: #0a53be;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #0d6efd;

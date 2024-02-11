@@ -1,10 +1,23 @@
-{% extends "base.html" %}
-{% block title %}Strona główna{% endblock %}
-{% block content %}
-    <center>
-     <h3 class="display-3">Niepoprawne dane logowania</h3>
-{#    <h6>Login: Lekarz lub admin</h6>#}
-{#    <h6>Haslo: 1234 lub admin</h6>#}
-    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Wróć do strony logowania</a>
-    </center>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type ="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <title>Logowanie</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('login') }}">WATWOSKYmed</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </nav>
+    </header>
+    <div class="alert alert-light" role="alert">
+      Niepoprawne dane logowania, aby kontynuwać, wróć do poprzedniej strony i spróbuj ponownie się zalogować.
+    </div>
+</body>
+</html>

@@ -1,16 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Strona główna{% endblock %}
-{% block content %}
-    </br></br>
-    <center>
 
-    <a href="{{ url_for('konfiguracja') }}" class="btn btn-primary btn-lg">Konfiguracja urządzenia</a></br>
-    <br>
-        <a href="{{ url_for('analiza') }}" class="btn btn-primary btn-lg">Analiza wyników</a>
-</br>
-    <form  method="post" action ="{{ url_for('logout') }}">
-        <br>
-        <button type="submit"  class="btn btn-primary btn-lg" >Wyloguj</button>
-    </form>
-    </center>
+{% block content %}
+<div class="text-center"><h6 class="display-6"><span class="border-bottom">O aplikacji</span></h6><br></div>
+<div class="d-flex justify-content-center">
+      <blockquote class="blockquote">
+          <p> Aby wybrać datę rozpoczęcia oraz zakończenia pomiarów z górnego menu, należy wybrać opcję <mark>"Konfiguracja urządzenia"</mark>.
+              Aby przejść do zakładki z wynikami pomiarów z górnego menu, należy wybrać opcję <mark>"Analiza badania"</mark>. W tej zakładce znajduje się możliwość wyboru numeru badania, na podstawie którego zostanie wygenerowany przebieg EKG, oraz zostaną wyliczone parametry określające pracę serca. Aby wyeksportować w formacie PDF raport z badania EKG, należy przejść do zakładki <mark>"Analiza badania"</mark>, gdzie znajduje się odpowiadający za to przycisk. Pamiętaj o wylogowaniu się po skorzystaniu z usług.
+          </p>
+      </blockquote>
+</div>
 {% endblock %}
