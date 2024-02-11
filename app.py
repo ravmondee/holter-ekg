@@ -9,20 +9,44 @@ import matplotlib.pyplot as plt
 import base64
 import numpy
 from scipy.signal import savgol_filter
+import pyhrv.tools as tools
+import pyhrv.time_domain as td
+import pyhrv.frequency_domain as fd
+import pyhrv.nonlinear as nl
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "klucz"
 
 # defincja zmiennych globalnych
 przesuniecie = 0
-fs = 360
 nazwa_pliku = '100'
 record_all, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=0)
+fs=fields['fs']
+sample=fields['sig_len']
+time_s=round(sample/fs, 2)
+time_m=round(time_s/60, 2)
+time_h=round(time_m/60, 2)
 qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fields['fs'])
+count_qrs_all= len(qrs_inds_all)
 rr_all = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
+# mean hr w samplach
 mean_hr_all = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='samples')
+# mean hr w sekundach
+mean_hr_all_t = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='seconds')
 heart_rate_all = wfdb.processing.compute_hr(len(record_all), qrs_inds_all, fs)
 annotacje_all = wfdb.rdann(nazwa_pliku, 'atr', sampfrom=0, sampto=len(record_all))
+
+rr_intervals = tools.nn_intervals(annotacje_all.sample)
+
+# obliczenia HRV
+s = td.sdnn(rr_intervals)
+r = td.rmssd(rr_intervals)
+p = td.nn50(rr_intervals)
+sdnn_all = round(float(s[0]), 2)
+rmssd_all = round(float(r[0]), 2)
+pnn50_all = round(float(p[0]), 2)
+
+
 
 
 
@@ -85,7 +109,7 @@ def analiza():
     if "user" in session:
         user = session["user"]
 
-        global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie
+        global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie, fs
         
         # Reakcja na przyciski przesuniecia
         if 'przesuniecie' in request.args:
@@ -99,25 +123,42 @@ def analiza():
         
         # zamiana sampli na czas
         # jeszcze nie używamy czasu na razie pracujemy na samplach
-        czas_start = sampfrom / fs
-        czas_stop = sampto / fs
+        czas_start = round(sampfrom / fs, 2)
+        czas_stop = round(sampto / fs, 2)
+        czas_s = round(czas_stop-czas_start, 2) # w sekundach
+        czas_m = round(czas_s/60, 2) # w minutach
+        czas_h = round(czas_m/60, 2) # w godzinach
         # zdefiniowanie osi x dla wykresu
         os_x = range(sampfrom, sampto)
+        os_x_t = numpy.linspace(czas_start, czas_stop, len(record[:,0]))
 
         # obliczenia qrs, rr, heart rate oraz pobranie annotacji
-        qrs_inds = wfdb.processing.xqrs_detect(sig=record[:, 0], fs=fields['fs'])
+        qrs_inds = wfdb.processing.xqrs_detect(sig=record[:, 0], fs=fs)
+        count_qrs = len(qrs_inds)
         rr = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
+        # mean_hr w samplach
         mean_hr = wfdb.processing.calc_mean_hr(rr, fs, rr_units='samples')
         heart_rate = wfdb.processing.compute_hr(len(record), qrs_inds, fs)
         annotacje = wfdb.rdann(nazwa_pliku, 'atr', sampfrom=sampfrom, sampto=sampto)
 
+        rr_intervals = tools.nn_intervals(annotacje.sample)
+
         # filtrowanie EKG
-        smoothed_signal = savgol_filter(record[:, 0], window_length=51, polyorder=3)
+        # smoothed_signal = savgol_filter(record[:, 0], window_length=51, polyorder=3)
         
         # wykres z zaznaczonymi qrs
         # fig=wfdb.plot_items(signal=record, ann_samp=[qrs_inds],return_fig=True)
         # fig=wfdb.plot_wfdb(record=record, annotation=annotacje,plot_sym=True,title='MIT-BIH Record 100',figsize=(20,6),return_fig=True)
         # fig.savefig("ann.png")
+
+        # obliczenia HRV
+        s = td.sdnn(rr_intervals)
+        r = td.rmssd(rr_intervals)
+        p = td.nn50(rr_intervals)
+        sdnn = round(float(s[0]), 2)
+        rmssd = round(float(r[0]), 2)
+        pnn50 = round(float(p[0]), 2)
+
 
         # przekształcenia
         float_mean_hr = float(mean_hr)
@@ -138,6 +179,7 @@ def analiza():
             else:
                 float_hr.append(float(i))
         
+        
         for i in heart_rate_all:
             if numpy.isnan(i):
                 float_hr_all.append(float_mean_hr_all)
@@ -153,6 +195,7 @@ def analiza():
 
         for i in annotacje_all.symbol:
             char_symbol_all.append(str(i))
+
 
         # generacja pliku
         f = open("annotation_log.txt", "w")
@@ -202,27 +245,47 @@ def analiza():
         # plt.title('MIT-BIH Record 100')
         # plt.xlabel('Time (samples)')
         # plt.ylabel('ECG Signal')
+        if_time=True
 
         # Save plot to BytesIO buffer
         buf = BytesIO()
         plt.figure(figsize=(12, 6))
         # plotuje samo EKG
-        plt.plot(os_x, record[:, 0])
+        if if_time:
+            # plotuje z osią czasu
+            plt.plot(os_x_t, record[:, 0])
+        else:
+            # plotuje z osią sampli
+            plt.plot(os_x, record[:, 0])
         # plotuje EKG oraz to pomarańczowe coś
         # plt.plot(os_x, record) 
         # plotuje zfiltrowane EKG
         # plt.plot(os_x, smoothed_signal, color='blue')
         plt.title('ECG Signal')
-        plt.xlabel('Sample')
+        if if_time:
+            # xlabel dla czasu
+            plt.xlabel('Seconds')
+        else:
+            # xlabel dla sampli
+            plt.xlabel('Sample')
         plt.ylabel('Amplitude')
 
         # Dodaj zaznaczenia annotacji
-        for sample, symbol in zip(annotacje.sample, annotacje.symbol):
-            if sampfrom <= sample < sampto and sample < len(record_all):
-                # annotacje dla normalnego EKG
-                plt.text(sample, record_all[sample, 0], symbol, fontsize=10, color='red')
-                # annotacje dla zfiltrowanego EKG
-                # plt.text(sample, smoothed_signal[sample - sampfrom], symbol, fontsize=10, color='red')
+
+        if if_time==False:
+            # annotacje dla osi sampli
+            for sample, symbol in zip(annotacje.sample, annotacje.symbol):
+                if sampfrom <= sample < sampto and sample < len(record_all):
+                    # annotacje dla normalnego EKG
+                    plt.text(sample, record_all[sample, 0], symbol, fontsize=10, color='red')
+                    # annotacje dla zfiltrowanego EKG
+                    # plt.text(sample, smoothed_signal[sample - sampfrom], symbol, fontsize=10, color='red')
+        else:
+            # annotacje dla osi czasu
+            for sample, symbol in zip(annotacje.sample, annotacje.symbol):
+                if czas_start <= sample/fs < czas_stop and sample < len(record_all):
+                    plt.text(sample/fs, record_all[sample, 0], symbol, fontsize=10, color='red')
+
 
         plt.grid(True)
         plt.tight_layout()
@@ -239,7 +302,7 @@ def analiza():
         # zwrócenie wszystkich danych do html
         return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,
                                total_ann=total_ann, count_N=count_N, count_A=count_A, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all,
-                               total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, content=user)
+                               total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, czas_s=czas_s, czas_m=czas_m, czas_h=czas_h, time_s=time_s, time_m=time_m, time_h=time_h, count_qrs_all=count_qrs_all, count_qrs=count_qrs, sdnn=sdnn, sdnn_all=sdnn_all, rmssd=rmssd, rmsdd_all=rmssd_all, pnn50=pnn50, pnn50_all=pnn50_all, content=user)
     else:
         return redirect(url_for('login'))
 
