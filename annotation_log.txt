@@ -1,17 +1,15 @@
-Average Heart Rate: 70.91
-Liczba annotacji: 11
-Liczba annotacji N: 0
+Average Heart Rate: 59.68
+Liczba annotacji: 9
+Liczba annotacji N: 8
 Liczba annotacji A: 0
-Maksymalny heart rate: 73.97
-Minimalny heart rate: 66.67
-sample nr: 31. Kod annotacji: +, Czas annotacji: 0.09 sekundy, Heart rate: 70.91
-sample nr: 197. Kod annotacji: L, Czas annotacji: 0.55 sekundy, Heart rate: 70.91
-sample nr: 489. Kod annotacji: L, Czas annotacji: 1.36 sekundy, Heart rate: 70.91
-sample nr: 804. Kod annotacji: L, Czas annotacji: 2.23 sekundy, Heart rate: 70.91
-sample nr: 1127. Kod annotacji: L, Czas annotacji: 3.13 sekundy, Heart rate: 70.91
-sample nr: 1430. Kod annotacji: L, Czas annotacji: 3.97 sekundy, Heart rate: 70.91
-sample nr: 1739. Kod annotacji: L, Czas annotacji: 4.83 sekundy, Heart rate: 70.91
-sample nr: 2040. Kod annotacji: L, Czas annotacji: 5.67 sekundy, Heart rate: 70.91
-sample nr: 2344. Kod annotacji: L, Czas annotacji: 6.51 sekundy, Heart rate: 70.91
-sample nr: 2641. Kod annotacji: L, Czas annotacji: 7.34 sekundy, Heart rate: 70.91
-sample nr: 2961. Kod annotacji: L, Czas annotacji: 8.22 sekundy, Heart rate: 70.91
+Maksymalny heart rate: 60.00
+Minimalny heart rate: 51.80
+sample nr: 22. Kod annotacji: +, Czas annotacji: 0.06 sekundy, Heart rate: 59.68
+sample nr: 170. Kod annotacji: N, Czas annotacji: 0.47 sekundy, Heart rate: 59.68
+sample nr: 583. Kod annotacji: N, Czas annotacji: 1.62 sekundy, Heart rate: 59.68
+sample nr: 966. Kod annotacji: N, Czas annotacji: 2.68 sekundy, Heart rate: 59.68
+sample nr: 1326. Kod annotacji: N, Czas annotacji: 3.68 sekundy, Heart rate: 59.68
+sample nr: 1704. Kod annotacji: N, Czas annotacji: 4.73 sekundy, Heart rate: 59.68
+sample nr: 2094. Kod annotacji: N, Czas annotacji: 5.82 sekundy, Heart rate: 59.68
+sample nr: 2511. Kod annotacji: N, Czas annotacji: 6.97 sekundy, Heart rate: 59.68
+sample nr: 2872. Kod annotacji: N, Czas annotacji: 7.98 sekundy, Heart rate: 59.68
