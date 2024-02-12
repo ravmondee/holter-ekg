@@ -59,6 +59,7 @@ def get_measurement_file(measurementa):
 
 
 # defincja zmiennych globalnych
+<<<<<<< HEAD
 przesuniecie = 0
 nazwa_pliku = '100'
 <<<<<<< HEAD
@@ -103,6 +104,9 @@ pnn50_all = round(float(p[0]), 2)
 =======
 annotacje_all = wfdb.rdann(plik, 'atr', sampfrom=0, sampto=len(record_all))
 >>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
+=======
+
+>>>>>>> 957fe701c884baaca452f5a7290973de277a4af6
 
 
 @app.route('/', methods=["POST", "GET"])
@@ -160,16 +164,37 @@ def konfiguracja():
         return redirect(url_for('login'))
 
 
-@app.route('/analiza')
+@app.route('/analiza', methods=["GET", "POST"])
 def analiza():
     if "user" in session:
         user = session["user"]
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie, fs
         
 =======
         global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie
+=======
+        przesuniecie = 0
+        fs = 360
+        nazwa_pliku = 100
+        plik = "measurements/100"
+
+        with app.app_context():
+            if request.method == 'POST':
+                nazwa_pliku = request.form.get("nazwa_pliku")
+                plik = f"measurements/{get_measurement_file(nazwa_pliku)}"
+
+
+
+        record_all, fields = wfdb.rdsamp(plik, sampfrom=0)
+        qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fields['fs'])
+        rr_all = wfdb.processing.ann2rr(plik, 'atr', as_array=True)
+        mean_hr_all = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='samples')
+        heart_rate_all = wfdb.processing.compute_hr(len(record_all), qrs_inds_all, fs)
+        annotacje_all = wfdb.rdann(plik, 'atr', sampfrom=0, sampto=len(record_all))
+>>>>>>> 957fe701c884baaca452f5a7290973de277a4af6
 
 >>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
         # Reakcja na przyciski przesuniecia
@@ -376,6 +401,7 @@ def analiza():
         buf = BytesIO()
         plt.figure(figsize=(12, 6))
         plt.plot(os_x, record[:, 0])
+        plt.title(f"ECG {nazwa_pliku}")
         plt.xlabel('Sample')
         plt.ylabel('Amplitude')
 
