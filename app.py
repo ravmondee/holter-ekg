@@ -68,9 +68,11 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/blad_logowania')
+@app.route('/blad_logowania', methods=["GET", "POST"])
 def blad_logowania():
     session.pop("user", None)
+    if request.method == 'POST':
+        return redirect(url_for('login'))
     return render_template('blad_logowania.html')
 
 
@@ -313,4 +315,4 @@ def download_pdf():
 
 
 if __name__ == '__main__':
-    app.run(port=5555,threaded=False)
+    app.run(port=5000)
