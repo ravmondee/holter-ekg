@@ -2,7 +2,7 @@
 {% block title %}Konfiguracja Holtera{% endblock %}
 {% block content %}
     <div align="center" class="container-sm">
-    <form method="get" action="{{ url_for('konfiguracja') }}">
+    <form method="POST" action="{{ url_for('konfiguracja') }}">
         <fieldset>
             <legend><span class="border-bottom">Konfiguracja urządzenia</span></legend><br>
             <div class="mb-3">

@@ -2,140 +2,149 @@
 {% block title %}Analiza Wyników EKG{% endblock %}
 
 {% block content %}
-
-        <h6 class="display-6"><span class="border-bottom">Analiza wyników badań EKG</span></h6><br>
-        <form method="post" action="{{ url_for('analiza') }}">
-            <select class="form-select" aria-label="Default select example" name="nazwa_pliku">
-                <option selected>Dostępne pomiary</option>
-                <option value="100">100</option>
-                <option value="101">101</option>
-                <option value="102">102</option>
-                <option value="103">103</option>
-                <option value="104">104</option>
-                <option value="105">105</option>
-                <option value="106">106</option>
-                <option value="107">107</option>
-                <option value="108">108</option>
-                <option value="109">109</option>
-                <option value="111">111</option>
-                <option value="112">112</option>
-                <option value="113">113</option>
-                <option value="114">114</option>
-                <option value="115">115</option>
-                <option value="116">116</option>
-                <option value="117">117</option>
-                <option value="118">118</option>
-                <option value="119">119</option>
-                <option value="121">121</option>
-                <option value="122">122</option>
-                <option value="123">123</option>
-                <option value="124">124</option>
-            </select>
-            <button type="submit" class="btn btn-primary">Zatwierdź wybór</button>
-        </form>
-        <div id="wykres">
-            <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot">
-        </div><br>
-        <div>
-            <a href="{{ url_for('analiza', przesuniecie=-3000) }}" class="btn btn-primary">Przesuń wykres w tył o 3000 próbek</a>
-            <a href="{{ url_for('analiza', przesuniecie=3000) }}" class="btn btn-primary">Przesuń wykres w przód o 3000 próbek</a>
-        </div><br>
-        <div>
-            <a href="{{ url_for('analiza', time=1) }}" class="btn btn-primary">Time</a>
-            <a href="{{ url_for('analiza', sample=1) }}" class="btn btn-primary">Sample</a>
-        </div><br>
-
-        <h6 class="display-6"><span class="border-bottom">Parametry wyliczone dla widocznego fragmentu EKG</span></h6><br>
-        <div id="tabela">
-            <table class="table table-striped">
-                <tr>
-                    <th>Czas w sekundach</th>
-                    <th>Czas w minutach</th>
-                    <th>Czas w godzinach</th>
-                    <th>Średni HR</th>
-                    <th>Max HR</th>
-                    <th>Min HR</th>
-                    <th>Łączna liczba anotacji</th>
-                    <th>Liczba anotacji N</th>
-                    <th>Liczba anotacji A</th>
-                    <th>Liczba anotacji /</th>
-                    <th>Liczba anotacji V</th>
-                    <th>Liczba anotacji L</th>
-                    <th>Liczba anotacji R</th>
-                    <th>SDNN</th>
-                    <th>RMSSD</th>
-                    <th>PNN50</th>
-
-                </tr>
-                <tr>
-                    <td>{{ czas_s }}</td>
-                    <td>{{ czas_m }}</td>
-                    <td>{{ czas_h }}</td>
-                    <td>{{ avg_hr }}</td>
-                    <td>{{ max_hr }}</td>
-                    <td>{{ min_hr }}</td>
-                    <td>{{ total_ann }}</td>
-                    <td>{{ count_N }}</td>
-                    <td>{{ count_A }}</td>
-                    <td>{{ count_slash }}</td>
-                    <td>{{ count_V }}</td>
-                    <td>{{ count_L }}</td>
-                    <td>{{ count_R }}</td>
-                    <td>{{ sdnn }}</td>
-                    <td>{{ rmssd }}</td>
-                    <td>{{ pnn50 }}</td>
-                </tr>
-            </table>
-        </div><br>
-
-        <h6 class="display-6"><span class="border-bottom">Parametry wyliczone z całego przebiegu EKG</span></h6><br>
-        <div id="tabela2" >
-            <table class="table table-striped">
-                <tr>
-                    <th>Czas w sekundach</th>
-                    <th>Czas w minutach</th>
-                    <th>Czas w godzinach</th>
-                    <th>Średni HR</th>
-                    <th>Max HR</th>
-                    <th>Min HR</th>
-                    <th>Łączna liczba anotacji</th>
-                    <th>Liczba anotacji N</th>
-                    <th>Liczba anotacji A</th>
-                    <th>Liczba anotacji /</th>
-                    <th>Liczba anotacji V</th>
-                    <th>Liczba anotacji L</th>
-                    <th>Liczba anotacji R</th>
-                    <th>SDNN</th>
-                    <th>RMSSD</th>
-                    <th>PNN50</th>
-
-                </tr>
-                <tr>
-                    <td>{{ time_s }}</td>
-                    <td>{{ time_m }}</td>
-                    <td>{{ time_h }}</td>
-                    <td>{{ avg_hr_all }}</td>
-                    <td>{{ max_hr_all }}</td>
-                    <td>{{ min_hr_all }}</td>
-                    <td>{{ total_ann_all }}</td>
-                    <td>{{ count_N_all }}</td>
-                    <td>{{ count_A_all }}</td>
-                    <td>{{ count_slash_all }}</td>
-                    <td>{{ count_V_all }}</td>
-                    <td>{{ count_L_all }}</td>
-                    <td>{{ count_R_all }}</td>
-                    <td>{{ sdnn_all }}</td>
-                    <td>{{ rmssd_all }}</td>
-                    <td>{{ pnn50_all }}</td>
-                </tr>
-            </table>
-        </div><br>
-
-        <div>
-            <form method="get" action="{{ url_for('download_pdf') }}">
-                <input type="hidden" name="download" value="1">
-                <button type="submit" class="btn btn-primary">Raport PDF</button><br><br>
+    <div class="text-center">
+        <div class="container-xl">
+            <h6 class="display-6"><span class="border-bottom">Analiza wyników badań EKG</span></h6><br>
+            <form method="post" action="{{ url_for('analiza') }}">
+                <center>
+                    <select class="form-select" aria-label="Default select example" name="nazwa_pliku">
+                        <option selected>Dostępne pomiary</option>
+                        <option value="100">100</option>
+                        <option value="101">101</option>
+                        <option value="102">102</option>
+                        <option value="103">103</option>
+                        <option value="104">104</option>
+                        <option value="105">105</option>
+                        <option value="106">106</option>
+                        <option value="107">107</option>
+                        <option value="108">108</option>
+                        <option value="109">109</option>
+                        <option value="111">111</option>
+                        <option value="112">112</option>
+                        <option value="113">113</option>
+                        <option value="114">114</option>
+                        <option value="115">115</option>
+                        <option value="116">116</option>
+                        <option value="117">117</option>
+                        <option value="118">118</option>
+                        <option value="119">119</option>
+                        <option value="121">121</option>
+                        <option value="122">122</option>
+                        <option value="123">123</option>
+                        <option value="124">124</option>
+                    </select><button type="submit" class="btn btn-primary">Zatwierdź wybór</button>
+                </center>
             </form>
+            <div id="wykres">
+                <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot">
+            </div><br>
+            <div>
+                <a href="{{ url_for('analiza', przesuniecie=-3000) }}" class="btn btn-primary">Przesuń wykres w tył</a>
+                <a href="{{ url_for('analiza', przesuniecie=3000) }}" class="btn btn-primary">Przesuń wykres w przód</a>
+                <a href="{{ url_for('analiza', time=1) }}" class="btn btn-primary">Oś X w sekundach</a>
+                <a href="{{ url_for('analiza', sample=1) }}" class="btn btn-primary">Oś X w próbkach</a>
+            </div><br>
+
+            <h6 class="display-6"><span class="border-bottom">Parametry wyliczone dla widocznego fragmentu EKG</span></h6><br>
+            <div id="tabela">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Czas w sekundach</th>
+                        <th>Czas w minutach</th>
+                        <th>Czas w godzinach</th>
+                        <th>Średni HR</th>
+                        <th>Max HR</th>
+                        <th>Min HR</th>
+                        <th>Łączna liczba anotacji</th>
+                        <th>Liczba anotacji N</th>
+                    </tr>
+                    <tr>
+                        <td>{{ czas_s }}</td>
+                        <td>{{ czas_m }}</td>
+                        <td>{{ czas_h }}</td>
+                        <td>{{ avg_hr }}</td>
+                        <td>{{ max_hr }}</td>
+                        <td>{{ min_hr }}</td>
+                        <td>{{ total_ann }}</td>
+                        <td>{{ count_N }}</td>
+                    </tr>
+                    <tr>
+                        <th>Liczba anotacji A</th>
+                        <th>Liczba anotacji /</th>
+                        <th>Liczba anotacji V</th>
+                        <th>Liczba anotacji L</th>
+                        <th>Liczba anotacji R</th>
+                        <th>SDNN</th>
+                        <th>RMSSD</th>
+                        <th>PNN50</th>
+                    </tr>
+                    <tr>
+                        <td>{{ count_A }}</td>
+                        <td>{{ count_slash }}</td>
+                        <td>{{ count_V }}</td>
+                        <td>{{ count_L }}</td>
+                        <td>{{ count_R }}</td>
+                        <td>{{ sdnn }}</td>
+                        <td>{{ rmssd }}</td>
+                        <td>{{ pnn50 }}</td>
+                    </tr>
+                </table>
+            </div><br>
+
+            <h6 class="display-6"><span class="border-bottom">Parametry wyliczone z całego przebiegu EKG</span></h6><br>
+            <div id="tabela2" >
+                <table class="table table-striped">
+                    <tr>
+                        <th>Czas w sekundach</th>
+                        <th>Czas w minutach</th>
+                        <th>Czas w godzinach</th>
+                        <th>Średni HR</th>
+                        <th>Max HR</th>
+                        <th>Min HR</th>
+                        <th>Łączna liczba anotacji</th>
+                        <th>Liczba anotacji N</th>
+
+                    </tr>
+                    <tr>
+                        <td>{{ time_s }}</td>
+                        <td>{{ time_m }}</td>
+                        <td>{{ time_h }}</td>
+                        <td>{{ avg_hr_all }}</td>
+                        <td>{{ max_hr_all }}</td>
+                        <td>{{ min_hr_all }}</td>
+                        <td>{{ total_ann_all }}</td>
+                        <td>{{ count_N_all }}</td>
+                    </tr>
+                    <tr>
+                        <th>Liczba anotacji A</th>
+                        <th>Liczba anotacji /</th>
+                        <th>Liczba anotacji V</th>
+                        <th>Liczba anotacji L</th>
+                        <th>Liczba anotacji R</th>
+                        <th>SDNN</th>
+                        <th>RMSSD</th>
+                        <th>PNN50</th>
+
+                    </tr>
+                    <tr>
+                        <td>{{ count_A_all }}</td>
+                        <td>{{ count_slash_all }}</td>
+                        <td>{{ count_V_all }}</td>
+                        <td>{{ count_L_all }}</td>
+                        <td>{{ count_R_all }}</td>
+                        <td>{{ sdnn_all }}</td>
+                        <td>{{ rmssd_all }}</td>
+                        <td>{{ pnn50_all }}</td>
+                    </tr>
+                </table>
+            </div><br>
+
+            <div>
+                <form method="get" action="{{ url_for('download_pdf') }}">
+                    <input type="hidden" name="download" value="1">
+                    <button type="submit" class="btn btn-primary">Raport PDF</button><br><br>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

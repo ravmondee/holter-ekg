@@ -1,16 +1,18 @@
 Average Heart Rate: 75.57
-Liczba annotacji: 10
+Liczba annotacji: 12
 Liczba annotacji N: 10
-Liczba annotacji A: 0
-Maksymalny heart rate: 77.98
-Minimalny heart rate: 70.13
-sample nr: 3282. Kod annotacji: N, Czas annotacji: 9.12 sekundy, Heart rate: 75.57
-sample nr: 3560. Kod annotacji: N, Czas annotacji: 9.89 sekundy, Heart rate: 75.57
-sample nr: 3862. Kod annotacji: N, Czas annotacji: 10.73 sekundy, Heart rate: 75.57
-sample nr: 4170. Kod annotacji: N, Czas annotacji: 11.58 sekundy, Heart rate: 75.57
-sample nr: 4466. Kod annotacji: N, Czas annotacji: 12.41 sekundy, Heart rate: 75.57
-sample nr: 4764. Kod annotacji: N, Czas annotacji: 13.23 sekundy, Heart rate: 75.57
-sample nr: 5060. Kod annotacji: N, Czas annotacji: 14.06 sekundy, Heart rate: 75.57
-sample nr: 5346. Kod annotacji: N, Czas annotacji: 14.85 sekundy, Heart rate: 75.57
-sample nr: 5633. Kod annotacji: N, Czas annotacji: 15.65 sekundy, Heart rate: 75.57
-sample nr: 5918. Kod annotacji: N, Czas annotacji: 16.44 sekundy, Heart rate: 75.57
+Liczba annotacji A: 1
+Maksymalny heart rate: 91.91
+Minimalny heart rate: 60.34
+sample nr: 18. Kod annotacji: +, Czas annotacji: 0.05 sekundy, Heart rate: 75.57
+sample nr: 77. Kod annotacji: N, Czas annotacji: 0.21 sekundy, Heart rate: 75.57
+sample nr: 370. Kod annotacji: N, Czas annotacji: 1.03 sekundy, Heart rate: 75.57
+sample nr: 662. Kod annotacji: N, Czas annotacji: 1.84 sekundy, Heart rate: 75.57
+sample nr: 946. Kod annotacji: N, Czas annotacji: 2.63 sekundy, Heart rate: 75.57
+sample nr: 1231. Kod annotacji: N, Czas annotacji: 3.42 sekundy, Heart rate: 75.57
+sample nr: 1515. Kod annotacji: N, Czas annotacji: 4.21 sekundy, Heart rate: 75.57
+sample nr: 1809. Kod annotacji: N, Czas annotacji: 5.03 sekundy, Heart rate: 75.57
+sample nr: 2044. Kod annotacji: A, Czas annotacji: 5.68 sekundy, Heart rate: 75.57
+sample nr: 2402. Kod annotacji: N, Czas annotacji: 6.67 sekundy, Heart rate: 75.57
+sample nr: 2706. Kod annotacji: N, Czas annotacji: 7.52 sekundy, Heart rate: 75.57
+sample nr: 2998. Kod annotacji: N, Czas annotacji: 8.33 sekundy, Heart rate: 75.57

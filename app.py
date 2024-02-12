@@ -23,9 +23,9 @@ app.secret_key = "klucz"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///measurements.db'
 db = SQLAlchemy(app)
 
-przesuniecie=0
-nazwa_pliku='100'
-if_time=True
+przesuniecie = 0
+nazwa_pliku = '100'
+if_time = True
 
 
 class Measurement(db.Model):
@@ -106,13 +106,13 @@ def dashboard():
         return redirect(url_for('login'))
 
 
-@app.route('/konfiguracja')
+@app.route('/konfiguracja', methods=['GET', 'POST'])
 def konfiguracja():
     if "user" in session:
         user = session["user"]
-        if request.method == 'get':
-            start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
-            end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
+        if request.method == 'POST':
+            start_date = request.form['start_date']
+            end_date = request.form['end_date']
             session["start_date"] = start_date
             session["end_date"] = end_date
             return redirect(url_for('dashboard'))
@@ -126,8 +126,6 @@ def analiza():
     if "user" in session:
         user = session["user"]
 
-
-
         global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie, fs, nazwa_pliku, if_time
 
         plik = "measurements/100"
@@ -136,21 +134,22 @@ def analiza():
             if request.method == 'POST':
                 nazwa_pliku = request.form.get("nazwa_pliku")
                 plik = f"measurements/{get_measurement_file(nazwa_pliku)}"
-                przesuniecie=0
-        
+                przesuniecie = 0
+
         if 'time' in request.args:
-            if_time =True
+            if_time = True
         if 'sample' in request.args:
-            if_time =False
+            if_time = False
 
         record_all, fields = wfdb.rdsamp(plik, sampfrom=0)
         fs = fields['fs']
-        sample=fields['sig_len']
-        time_s=round(sample/fs, 2)
-        time_m=round(time_s/60, 2)
-        time_h=round(time_m/60, 2)
+        sample = fields['sig_len']
+        time_s = round(sample / fs, 2)
+        time_m = round(time_s / 60, 2)
+        session["pdf_time"] = time_m
+        time_h = round(time_m / 60, 2)
         qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fs)
-        count_qrs_all= len(qrs_inds_all)
+        count_qrs_all = len(qrs_inds_all)
         rr_all = wfdb.processing.ann2rr(plik, 'atr', as_array=True)
         mean_hr_all = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='samples')
         heart_rate_all = wfdb.processing.compute_hr(len(record_all), qrs_inds_all, fs)
@@ -165,8 +164,6 @@ def analiza():
         rmssd_all = round(float(r[0]), 2)
         pnn50_all = round(float(p[0]), 2)
 
-
-
         # Reakcja na przyciski przesuniecia
         if 'przesuniecie' in request.args:
             przesuniecie += int(request.args['przesuniecie'])
@@ -177,17 +174,17 @@ def analiza():
 
         # pobranie rekordów z pliku
         record, fields = wfdb.rdsamp(plik, sampfrom=sampfrom, sampto=sampto)
-        
+
         # zamiana sampli na czas
         czas_start = round(sampfrom / fs, 2)
         czas_stop = round(sampto / fs, 2)
-        czas_s = round(czas_stop-czas_start, 2) # w sekundach
-        czas_m = round(czas_s/60, 2) # w minutach
-        czas_h = round(czas_m/60, 2) # w godzinach
+        czas_s = round(czas_stop - czas_start, 2)  # w sekundach
+        czas_m = round(czas_s / 60, 2)  # w minutach
+        czas_h = round(czas_m / 60, 2)  # w godzinach
 
         # zdefiniowanie osi x dla wykresu
         os_x = range(sampfrom, sampto)
-        os_x_t = numpy.linspace(czas_start, czas_stop, len(record[:,0]))
+        os_x_t = numpy.linspace(czas_start, czas_stop, len(record[:, 0]))
 
         # obliczenia qrs, rr, heart rate oraz pobranie annotacji
 
@@ -242,7 +239,6 @@ def analiza():
 
         for i in annotacje_all.symbol:
             char_symbol_all.append(str(i))
-
 
         # generacja pliku
         f = open("annotation_log.txt", "w")
@@ -309,7 +305,6 @@ def analiza():
         max_hr_all = f"{max(float_hr_all):.2f}"
         min_hr_all = f"{min(float_hr_all):.2f}"
 
-
         # Plot signal
         # plt.figure(figsize=(20, 6))
         # plt.style.use('ggplot')
@@ -343,7 +338,7 @@ def analiza():
 
         # Dodaj zaznaczenia annotacji
 
-        if if_time==False:
+        if if_time == False:
             # annotacje dla osi sampli
             for sample, symbol in zip(annotacje.sample, annotacje.symbol):
                 if sampfrom <= sample < sampto and sample < len(record_all):
@@ -354,11 +349,8 @@ def analiza():
         else:
             # annotacje dla osi czasu
             for sample, symbol in zip(annotacje.sample, annotacje.symbol):
-                if czas_start <= sample/fs < czas_stop and sample < len(record_all):
-                    plt.text(sample/fs, record_all[sample, 0], symbol, fontsize=10, color='red')
-
-
-    
+                if czas_start <= sample / fs < czas_stop and sample < len(record_all):
+                    plt.text(sample / fs, record_all[sample, 0], symbol, fontsize=10, color='red')
 
         plt.grid(True)
         plt.tight_layout()
@@ -367,7 +359,15 @@ def analiza():
         plt.close()
 
         chart_data = base64.b64encode(buf.getvalue()).decode('utf-8')
-        return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,total_ann=total_ann, count_N=count_N, count_A=count_A, count_slash=count_slash, count_V=count_V, count_L=count_L, count_R=count_R, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all, total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, count_slash_all=count_slash_all, count_V_all=count_V_all, count_L_all=count_L_all, count_R_all=count_R_all, czas_s=czas_s, czas_m=czas_m, czas_h=czas_h, time_s=time_s, time_m=time_m, time_h=time_h, count_qrs_all=count_qrs_all, count_qrs=count_qrs, sdnn=sdnn, sdnn_all=sdnn_all, rmssd=rmssd, rmsdd_all=rmssd_all, pnn50=pnn50, pnn50_all=pnn50_all, content=user)
+        return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,
+                               total_ann=total_ann, count_N=count_N, count_A=count_A, count_slash=count_slash,
+                               count_V=count_V, count_L=count_L, count_R=count_R, avg_hr_all=avg_hr_all,
+                               max_hr_all=max_hr_all, min_hr_all=min_hr_all, total_ann_all=total_ann_all,
+                               count_N_all=count_N_all, count_A_all=count_A_all, count_slash_all=count_slash_all,
+                               count_V_all=count_V_all, count_L_all=count_L_all, count_R_all=count_R_all, czas_s=czas_s,
+                               czas_m=czas_m, czas_h=czas_h, time_s=time_s, time_m=time_m, time_h=time_h,
+                               count_qrs_all=count_qrs_all, count_qrs=count_qrs, sdnn=sdnn, sdnn_all=sdnn_all,
+                               rmssd=rmssd, rmssd_all=rmssd_all, pnn50=pnn50, pnn50_all=pnn50_all, content=user)
     else:
         return redirect(url_for('login'))
 
@@ -389,14 +389,22 @@ def download_pdf():
     count_slash_all = session.get("pdf_count_slash_all", 0)
     count_V_all = session.get("pdf_count_V_all", 0)
     count_L_all = session.get("pdf_count_L_all", 0)
-    start_date=session.get("start_date", 0)
-    end_date=session.get("end_date", 0)
-
-    plik_pdf = generuj_pdf(start_date, end_date, avg_hr_all, max_hr_all, min_hr_all, total_ann_all, count_N_all, count_A_all, count_slash_all, count_V_all, count_L_all)
+    start_date = session.get("start_date", 0)
+    end_date = session.get("end_date", 0)
+    pdf_SDNN = session.get("pdf_sdnn_all", 0)
+    pdf_RMSDD = session.get("pdf_rmssd_all", 0)
+    pdf_PNN = session.get("pdf_pnn50_all", 0)
+    pdf_time = session.get("pdf_time", 0)
+    plik_pdf = generuj_pdf(start_date, end_date, avg_hr_all, max_hr_all, min_hr_all, total_ann_all, count_N_all,
+                           count_A_all, count_slash_all,
+                           count_V_all, count_L_all, pdf_SDNN, pdf_RMSDD, pdf_PNN, pdf_time)
     return send_file(plik_pdf, as_attachment=True, download_name='Raport_EKG.pdf')
 
 
-def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_hr_all, pdf_total_ann_all, pdf_count_N_all, pdf_count_A_all, pdf_count_slash_all, pdf_count_V_all, pdf_count_L_all):
+def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_hr_all, pdf_total_ann_all,
+                pdf_count_N_all,
+                pdf_count_A_all, pdf_count_slash_all, pdf_count_V_all, pdf_count_L_all, pdf_SDNN, pdf_RMSDD, pdf_PNN,
+                pdf_time):
     buffer = BytesIO()
     p = canvas.Canvas(buffer)
     pdfmetrics.registerFont(TTFont('Verdana', 'Verdana.ttf'))
@@ -424,7 +432,7 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
     y -= 20
     p.drawString(x, y, f"Lekarz: {lekarz_in}")
     y -= 20
-    p.drawString(x, y,f"Przedzial czasowy wykonywanego badania: {start_date} - {end_date}")
+    p.drawString(x, y, f"Przedzial czasowy wykonywanego badania: {start_date} - {end_date}")
     y -= 30
 
     # Cechy charakterystyczne badania
@@ -449,6 +457,12 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
     p.drawString(x + 20, y, f"*Suma anotacji V: {pdf_count_V_all}")
     y -= 20
     p.drawString(x + 20, y, f"*Suma anotacji L: {pdf_count_L_all}")
+    y -= 20
+    p.drawString(x + 20, y, f"*SDNN: {pdf_SDNN}")
+    y -= 20
+    p.drawString(x + 20, y, f"*RMSSD: {pdf_RMSDD}")
+    y -= 20
+    p.drawString(x + 20, y, f"*PNN50: {pdf_PNN}")
     y -= 30
 
     # Wnioski
@@ -456,10 +470,11 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
     p.drawCentredString(300, y, "Wnioski")
     y -= 20
     p.setFont("Verdana", 12)
-    wnioski_txt = f"Całkowity czas zapisu wyniósł [data_k - data_p] godz. Przy czym średni HR wynosił {pdf_mean_hr_all:.2f}."
+    wnioski_txt = f"Całkowity czas badania wynosi {pdf_time} minut. Przy czym średni HR wynosił {pdf_mean_hr_all:.2f}."
     p.drawString(x - 40, y, wnioski_txt)
     y -= 20
     p.drawString(400, 20, "Podpis:")
+
 
     p.showPage()
     # Ewentualne wykresy
@@ -471,4 +486,4 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
 
 
 if __name__ == '__main__':
-    app.run(port=5000, threaded=False)
+    app.run(port=5000)
