@@ -484,6 +484,5 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
     buffer.seek(0)
     return buffer
 
-
 if __name__ == '__main__':
     app.run(port=5000,threaded=False)
