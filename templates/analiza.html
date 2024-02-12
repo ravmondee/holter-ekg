@@ -40,6 +40,10 @@
             <a href="{{ url_for('analiza', przesuniecie=-3000) }}" class="btn btn-primary">Przesuń wykres w tył o 3000 próbek</a>
             <a href="{{ url_for('analiza', przesuniecie=3000) }}" class="btn btn-primary">Przesuń wykres w przód o 3000 próbek</a>
         </div><br>
+        <div>
+            <a href="{{ url_for('analiza', time=1) }}" class="btn btn-primary">Time</a>
+            <a href="{{ url_for('analiza', sample=1) }}" class="btn btn-primary">Sample</a>
+        </div><br>
 
         <h6 class="display-6"><span class="border-bottom">Parametry wyliczone dla widocznego fragmentu EKG</span></h6><br>
         <div id="tabela">

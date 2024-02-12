@@ -23,6 +23,10 @@ app.secret_key = "klucz"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///measurements.db'
 db = SQLAlchemy(app)
 
+przesuniecie=0
+nazwa_pliku='100'
+if_time=True
+
 
 class Measurement(db.Model):
     file = db.Column(db.String, primary_key=True)
@@ -124,18 +128,20 @@ def analiza():
 
 
 
-        global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie, fs
+        global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie, fs, nazwa_pliku, if_time
 
-        przesuniecie = 0
-        
-
-        nazwa_pliku = 100
         plik = "measurements/100"
 
         with (app.app_context()):
             if request.method == 'POST':
                 nazwa_pliku = request.form.get("nazwa_pliku")
                 plik = f"measurements/{get_measurement_file(nazwa_pliku)}"
+                przesuniecie=0
+        
+        if 'time' in request.args:
+            if_time =True
+        if 'sample' in request.args:
+            if_time =False
 
         record_all, fields = wfdb.rdsamp(plik, sampfrom=0)
         fs = fields['fs']
@@ -220,11 +226,6 @@ def analiza():
                 float_hr.append(float_mean_hr)
             else:
                 float_hr.append(float(i))
-
-        
-        
-
-
 
         for i in heart_rate_all:
             if numpy.isnan(i):
@@ -316,7 +317,6 @@ def analiza():
         # plt.title('MIT-BIH Record 100')
         # plt.xlabel('Time (samples)')
         # plt.ylabel('ECG Signal')
-        if_time=True
 
         # Save plot to BytesIO buffer
         buf = BytesIO()
