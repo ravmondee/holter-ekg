@@ -3,98 +3,6 @@
 
 {% block content %}
 
-
-<<<<<<< HEAD
-    <!-- Wykres przebiegu EKG -->
-    <div id="wykres">
-        <br>
-        <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot" class="img-fluid">
-    </div>
-    <div>
-    </div>
-
-    <!-- Tabela z podstawowymi parametrami -->
-    <div id="tabela">
-        <h2>Podstawowe parametry dla fragmentu EKG</h2>
-        <table class="table">
-            <tr>
-                <th>Czas w sekundach</th>
-                <th>Czas w minutach</th>
-                <th>Czas w godzinach</th>
-                <th>Średni HR</th>
-                <th>Max HR</th>
-                <th>Min HR</th>
-                <th>Liczba zespołów QRS</th>
-                <th>Łączna liczba anotacji</th>
-                <th>Liczba anotacji N</th>
-                <th>Liczba anotacji A</th>
-                <th>SDNN</th>
-                <th>RMSSD</th>
-                <th>PNN50</th>
-            </tr>
-            <tr>
-                <td>{{ czas_s }}</td>
-                <td>{{ czas_m }}</td>
-                <td>{{ czas_h }}</td>
-                <td>{{ avg_hr }}</td>
-                <td>{{ max_hr }}</td>
-                <td>{{ min_hr }}</td>
-                <td>{{ count_qrs }}</td>
-                <td>{{ total_ann }}</td>
-                <td>{{ count_N }}</td>
-                <td>{{ count_A }}</td>
-                <td>{{ sdnn }}</td>
-                <td>{{ rmssd }}</td>
-                <td>{{ pnn50 }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div id="tabela">
-        <h2>Podstawowe parametry dla całego EKG</h2>
-        <table class="table">
-            <tr>
-                <th>Czas w sekundach</th>
-                <th>Czas w minutach</th>
-                <th>Czas w godzinach</th>
-                <th>Średni HR</th>
-                <th>Max HR</th>
-                <th>Min HR</th>
-                <th>Liczba zespołów QRS</th>
-                <th>Łączna liczba anotacji</th>
-                <th>Liczba anotacji N</th>
-                <th>Liczba anotacji A</th>
-                <th>SDNN</th>
-                <th>RMSSD</th>
-                <th>PNN50</th>
-                
-            </tr>
-            <tr>
-                <td>{{ time_s }}</td>
-                <td>{{ time_m }}</td>
-                <td>{{ time_h }}</td>
-                <td>{{ avg_hr_all }}</td>
-                <td>{{ max_hr_all }}</td>
-                <td>{{ min_hr_all }}</td>
-                <td>{{ count_qrs_all }}</td>
-                <td>{{ total_ann_all }}</td>
-                <td>{{ count_N_all }}</td>
-                <td>{{ count_A_all }}</td>
-                <td>{{ sdnn_all }}</td>
-                <td>{{ rmssd_all }}</td>
-                <td>{{ pnn50_all }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Przycisk do wyeksportowania wyników do PDF -->
-    <div>
-        <form method="get" action="{{ url_for('download_pdf') }}">
-            <!-- Dodaj ukryte pole z atrybutem download -->
-            <input type="hidden" name="download" value="1">
-            <button type="submit" class="btn btn-primary btn-lg">Eksportuj do PDF</button><br><br>
-=======
-    <div align="center" class="container-xl">
         <h6 class="display-6"><span class="border-bottom">Analiza wyników badań EKG</span></h6><br>
         <form method="post" action="{{ url_for('analiza') }}">
             <select class="form-select" aria-label="Default select example" name="nazwa_pliku">
@@ -124,7 +32,6 @@
                 <option value="124">124</option>
             </select>
             <button type="submit" class="btn btn-primary">Zatwierdź wybór</button>
->>>>>>> 11178b2632b6b91e09ea5850f35673b4aeed7e79
         </form>
         <div id="wykres">
             <img src="data:image/png;base64,{{ chart_data }}" alt="ECG Signal Plot">
@@ -138,6 +45,9 @@
         <div id="tabela">
             <table class="table table-striped">
                 <tr>
+                    <th>Czas w sekundach</th>
+                    <th>Czas w minutach</th>
+                    <th>Czas w godzinach</th>
                     <th>Średni HR</th>
                     <th>Max HR</th>
                     <th>Min HR</th>
@@ -148,9 +58,15 @@
                     <th>Liczba anotacji V</th>
                     <th>Liczba anotacji L</th>
                     <th>Liczba anotacji R</th>
+                    <th>SDNN</th>
+                    <th>RMSSD</th>
+                    <th>PNN50</th>
 
                 </tr>
                 <tr>
+                    <td>{{ czas_s }}</td>
+                    <td>{{ czas_m }}</td>
+                    <td>{{ czas_h }}</td>
                     <td>{{ avg_hr }}</td>
                     <td>{{ max_hr }}</td>
                     <td>{{ min_hr }}</td>
@@ -161,6 +77,9 @@
                     <td>{{ count_V }}</td>
                     <td>{{ count_L }}</td>
                     <td>{{ count_R }}</td>
+                    <td>{{ sdnn }}</td>
+                    <td>{{ rmssd }}</td>
+                    <td>{{ pnn50 }}</td>
                 </tr>
             </table>
         </div><br>
@@ -169,6 +88,9 @@
         <div id="tabela2" >
             <table class="table table-striped">
                 <tr>
+                    <th>Czas w sekundach</th>
+                    <th>Czas w minutach</th>
+                    <th>Czas w godzinach</th>
                     <th>Średni HR</th>
                     <th>Max HR</th>
                     <th>Min HR</th>
@@ -179,9 +101,15 @@
                     <th>Liczba anotacji V</th>
                     <th>Liczba anotacji L</th>
                     <th>Liczba anotacji R</th>
+                    <th>SDNN</th>
+                    <th>RMSSD</th>
+                    <th>PNN50</th>
 
                 </tr>
                 <tr>
+                    <td>{{ time_s }}</td>
+                    <td>{{ time_m }}</td>
+                    <td>{{ time_h }}</td>
                     <td>{{ avg_hr_all }}</td>
                     <td>{{ max_hr_all }}</td>
                     <td>{{ min_hr_all }}</td>
@@ -192,6 +120,9 @@
                     <td>{{ count_V_all }}</td>
                     <td>{{ count_L_all }}</td>
                     <td>{{ count_R_all }}</td>
+                    <td>{{ sdnn_all }}</td>
+                    <td>{{ rmssd_all }}</td>
+                    <td>{{ pnn50_all }}</td>
                 </tr>
             </table>
         </div><br>

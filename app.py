@@ -11,14 +11,11 @@ import matplotlib.pyplot as plt
 import base64
 import numpy
 from scipy.signal import savgol_filter
-<<<<<<< HEAD
 import pyhrv.tools as tools
 import pyhrv.time_domain as td
 import pyhrv.frequency_domain as fd
 import pyhrv.nonlinear as nl
-=======
 from flask_sqlalchemy import SQLAlchemy
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "klucz"
@@ -61,60 +58,8 @@ def get_measurement_file(measurementa):
         return None
 
 
-# defincja zmiennych globalnych
-<<<<<<< HEAD
-<<<<<<< HEAD
-przesuniecie = 0
-nazwa_pliku = '100'
-<<<<<<< HEAD
-record_all, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=0)
-fs=fields['fs']
-sample=fields['sig_len']
-time_s=round(sample/fs, 2)
-time_m=round(time_s/60, 2)
-time_h=round(time_m/60, 2)
-qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fields['fs'])
-count_qrs_all= len(qrs_inds_all)
-rr_all = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
-# mean hr w samplach
-=======
-
-with app.app_context():
-    plik = f"measurements/{get_measurement_file(nazwa_pliku)}"
-
-record_all, fields = wfdb.rdsamp(plik, sampfrom=0)
-qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fields['fs'])
-rr_all = wfdb.processing.ann2rr(plik, 'atr', as_array=True)
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
-mean_hr_all = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='samples')
-# mean hr w sekundach
-mean_hr_all_t = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='seconds')
-heart_rate_all = wfdb.processing.compute_hr(len(record_all), qrs_inds_all, fs)
-<<<<<<< HEAD
-annotacje_all = wfdb.rdann(nazwa_pliku, 'atr', sampfrom=0, sampto=len(record_all))
-
-rr_intervals = tools.nn_intervals(annotacje_all.sample)
-
-# obliczenia HRV
-s = td.sdnn(rr_intervals)
-r = td.rmssd(rr_intervals)
-p = td.nn50(rr_intervals)
-sdnn_all = round(float(s[0]), 2)
-rmssd_all = round(float(r[0]), 2)
-pnn50_all = round(float(p[0]), 2)
-
-
-
-=======
-annotacje_all = wfdb.rdann(plik, 'atr', sampfrom=0, sampto=len(record_all))
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
-=======
-
->>>>>>> 957fe701c884baaca452f5a7290973de277a4af6
-
-=======
 global pdf_mean_hr_all, pdf_max_hr_all, pdf_min_hr_all, pdf_total_ann_all, pdf_count_N_all, pdf_count_A_all, pdf_count_slash_all, pdf_count_V_all, pdf_count_L_all
->>>>>>> origin/main
+
 
 @app.route('/', methods=["POST", "GET"])
 def login():
@@ -177,15 +122,12 @@ def analiza():
     if "user" in session:
         user = session["user"]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+
         global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie, fs
-        
-=======
-        global record_all, qrs_inds_all, rr_all, mean_hr_all, heart_rate_all, annotacje_all, przesuniecie
-=======
+
         przesuniecie = 0
-        fs = 360
+        
 
         nazwa_pliku = 100
         plik = "measurements/100"
@@ -196,14 +138,29 @@ def analiza():
                 plik = f"measurements/{get_measurement_file(nazwa_pliku)}"
 
         record_all, fields = wfdb.rdsamp(plik, sampfrom=0)
-        qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fields['fs'])
+        fs = fields['fs']
+        sample=fields['sig_len']
+        time_s=round(sample/fs, 2)
+        time_m=round(time_s/60, 2)
+        time_h=round(time_m/60, 2)
+        qrs_inds_all = wfdb.processing.xqrs_detect(sig=record_all[:, 0], fs=fs)
+        count_qrs_all= len(qrs_inds_all)
         rr_all = wfdb.processing.ann2rr(plik, 'atr', as_array=True)
         mean_hr_all = wfdb.processing.calc_mean_hr(rr_all, fs, rr_units='samples')
         heart_rate_all = wfdb.processing.compute_hr(len(record_all), qrs_inds_all, fs)
         annotacje_all = wfdb.rdann(plik, 'atr', sampfrom=0, sampto=len(record_all))
->>>>>>> 957fe701c884baaca452f5a7290973de277a4af6
 
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
+        rr_intervals = tools.nn_intervals(annotacje_all.sample)
+
+        s = td.sdnn(rr_intervals)
+        r = td.rmssd(rr_intervals)
+        p = td.nn50(rr_intervals)
+        sdnn_all = round(float(s[0]), 2)
+        rmssd_all = round(float(r[0]), 2)
+        pnn50_all = round(float(p[0]), 2)
+
+
+
         # Reakcja na przyciski przesuniecia
         if 'przesuniecie' in request.args:
             przesuniecie += int(request.args['przesuniecie'])
@@ -213,51 +170,30 @@ def analiza():
         sampto = przesuniecie + 3000
 
         # pobranie rekordów z pliku
-<<<<<<< HEAD
-        record, fields = wfdb.rdsamp(nazwa_pliku, sampfrom=sampfrom, sampto=sampto)
+        record, fields = wfdb.rdsamp(plik, sampfrom=sampfrom, sampto=sampto)
         
         # zamiana sampli na czas
-        # jeszcze nie używamy czasu na razie pracujemy na samplach
         czas_start = round(sampfrom / fs, 2)
         czas_stop = round(sampto / fs, 2)
         czas_s = round(czas_stop-czas_start, 2) # w sekundach
         czas_m = round(czas_s/60, 2) # w minutach
         czas_h = round(czas_m/60, 2) # w godzinach
-=======
-        record, fields = wfdb.rdsamp(plik, sampfrom=sampfrom, sampto=sampto)
 
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
         # zdefiniowanie osi x dla wykresu
         os_x = range(sampfrom, sampto)
         os_x_t = numpy.linspace(czas_start, czas_stop, len(record[:,0]))
 
         # obliczenia qrs, rr, heart rate oraz pobranie annotacji
-<<<<<<< HEAD
+
         qrs_inds = wfdb.processing.xqrs_detect(sig=record[:, 0], fs=fs)
         count_qrs = len(qrs_inds)
-        rr = wfdb.processing.ann2rr(nazwa_pliku, 'atr', as_array=True)
-        # mean_hr w samplach
-=======
-        qrs_inds = wfdb.processing.xqrs_detect(sig=record[:, 0], fs=fields['fs'])
         rr = wfdb.processing.ann2rr(plik, 'atr', as_array=True)
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
+
         mean_hr = wfdb.processing.calc_mean_hr(rr, fs, rr_units='samples')
         heart_rate = wfdb.processing.compute_hr(len(record), qrs_inds, fs)
         annotacje = wfdb.rdann(plik, 'atr', sampfrom=sampfrom, sampto=sampto)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         rr_intervals = tools.nn_intervals(annotacje.sample)
-
-        # filtrowanie EKG
-        # smoothed_signal = savgol_filter(record[:, 0], window_length=51, polyorder=3)
-        
-        # wykres z zaznaczonymi qrs
-        # fig=wfdb.plot_items(signal=record, ann_samp=[qrs_inds],return_fig=True)
-        # fig=wfdb.plot_wfdb(record=record, annotation=annotacje,plot_sym=True,title='MIT-BIH Record 100',figsize=(20,6),return_fig=True)
-        # fig.savefig("ann.png")
-=======
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
 
         # obliczenia HRV
         s = td.sdnn(rr_intervals)
@@ -267,9 +203,6 @@ def analiza():
         rmssd = round(float(r[0]), 2)
         pnn50 = round(float(p[0]), 2)
 
-
-=======
->>>>>>> origin/main
         # przekształcenia
         float_mean_hr = float(mean_hr)
         count_N = 0
@@ -287,12 +220,12 @@ def analiza():
                 float_hr.append(float_mean_hr)
             else:
                 float_hr.append(float(i))
-<<<<<<< HEAD
-        
-        
-=======
 
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
+        
+        
+
+
+
         for i in heart_rate_all:
             if numpy.isnan(i):
                 float_hr_all.append(float_mean_hr_all)
@@ -360,6 +293,9 @@ def analiza():
         session["pdf_count_slash_all"] = count_slash_all
         session["pdf_count_V_all"] = count_V_all
         session["pdf_count_L_all"] = count_L_all
+        session["pdf_sdnn_all"] = sdnn_all
+        session["pdf_rmssd_all"] = rmssd_all
+        session["pdf_pnn50_all"] = pnn50_all
 
         # Średni HR, Max HR, Min HR
         avg_hr = f"{mean_hr:.2f}"
@@ -372,7 +308,7 @@ def analiza():
         max_hr_all = f"{max(float_hr_all):.2f}"
         min_hr_all = f"{min(float_hr_all):.2f}"
 
-<<<<<<< HEAD
+
         # Plot signal
         # plt.figure(figsize=(20, 6))
         # plt.style.use('ggplot')
@@ -396,7 +332,7 @@ def analiza():
         # plt.plot(os_x, record) 
         # plotuje zfiltrowane EKG
         # plt.plot(os_x, smoothed_signal, color='blue')
-        plt.title('ECG Signal')
+        plt.title(f"ECG {nazwa_pliku}")
         if if_time:
             # xlabel dla czasu
             plt.xlabel('Seconds')
@@ -421,19 +357,8 @@ def analiza():
                 if czas_start <= sample/fs < czas_stop and sample < len(record_all):
                     plt.text(sample/fs, record_all[sample, 0], symbol, fontsize=10, color='red')
 
-=======
-        buf = BytesIO()
-        plt.figure(figsize=(12, 6))
-        plt.plot(os_x, record[:, 0])
-        plt.title(f"ECG {nazwa_pliku}")
-        plt.xlabel('Sample')
-        plt.ylabel('Amplitude')
 
-        # Dodaj zaznaczenia annotacji
-        for sample, symbol in zip(annotacje.sample, annotacje.symbol):
-            if sampfrom <= sample < sampto and sample < len(record_all):
-                plt.text(sample, record_all[sample, 0], symbol, fontsize=10, color='red')
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
+    
 
         plt.grid(True)
         plt.tight_layout()
@@ -442,25 +367,7 @@ def analiza():
         plt.close()
 
         chart_data = base64.b64encode(buf.getvalue()).decode('utf-8')
-        return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,
-<<<<<<< HEAD
-<<<<<<< HEAD
-                               total_ann=total_ann, count_N=count_N, count_A=count_A, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all,
-                               total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, czas_s=czas_s, czas_m=czas_m, czas_h=czas_h, time_s=time_s, time_m=time_m, time_h=time_h, count_qrs_all=count_qrs_all, count_qrs=count_qrs, sdnn=sdnn, sdnn_all=sdnn_all, rmssd=rmssd, rmsdd_all=rmssd_all, pnn50=pnn50, pnn50_all=pnn50_all, content=user)
-=======
-                               total_ann=total_ann, count_N=count_N, count_A=count_A, count_slash=count_slash, count_V=count_V,
-                               count_L=count_L, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all,
-                               total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, count_slash_all=count_slash_all,
-                               count_V_all=count_V_all, count_L_all=count_L_all, content=user)
->>>>>>> 3b9185a3c1c1523e7efbb01d9890e59e0cb960e6
-=======
-                               total_ann=total_ann, count_N=count_N, count_A=count_A, count_slash=count_slash,
-                               count_V=count_V,
-                               count_L=count_L, count_R=count_R, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all,
-                               total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all,
-                               count_slash_all=count_slash_all,
-                               count_V_all=count_V_all, count_L_all=count_L_all, count_R_all=count_R_all, content=user)
->>>>>>> origin/main
+        return render_template('analiza.html', chart_data=chart_data, avg_hr=avg_hr, max_hr=max_hr, min_hr=min_hr,total_ann=total_ann, count_N=count_N, count_A=count_A, count_slash=count_slash, count_V=count_V, count_L=count_L, count_R=count_R, avg_hr_all=avg_hr_all, max_hr_all=max_hr_all, min_hr_all=min_hr_all, total_ann_all=total_ann_all, count_N_all=count_N_all, count_A_all=count_A_all, count_slash_all=count_slash_all, count_V_all=count_V_all, count_L_all=count_L_all, count_R_all=count_R_all, czas_s=czas_s, czas_m=czas_m, czas_h=czas_h, time_s=time_s, time_m=time_m, time_h=time_h, count_qrs_all=count_qrs_all, count_qrs=count_qrs, sdnn=sdnn, sdnn_all=sdnn_all, rmssd=rmssd, rmsdd_all=rmssd_all, pnn50=pnn50, pnn50_all=pnn50_all, content=user)
     else:
         return redirect(url_for('login'))
 
@@ -527,9 +434,9 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
     p.setFont("Verdana", 12)
     p.drawString(x + 20, y, f"*Sredni HR: {pdf_mean_hr_all:.2f}")
     y -= 20
-    p.drawString(x + 20, y, f"*Maksymalny HR: {pdf_max_hr_all}")
+    p.drawString(x + 20, y, f"*Maksymalny HR: {pdf_max_hr_all:.2f}")
     y -= 20
-    p.drawString(x + 20, y, f"*Minimalny HR: {pdf_min_hr_all}")
+    p.drawString(x + 20, y, f"*Minimalny HR: {pdf_min_hr_all:.2f}")
     y -= 20
     p.drawString(x + 20, y, f"*Suma anotacji: {pdf_total_ann_all}")
     y -= 20
@@ -564,4 +471,4 @@ def generuj_pdf(start_date, end_date, pdf_mean_hr_all, pdf_max_hr_all, pdf_min_h
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, threaded=False)
